@@ -1,8 +1,12 @@
 # popsign-meow
 
+## Overview
+
+This is a Kedro project, for the "asl-signs" kaggle competition, which was built using `Kedro 0.18.6`. Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get started.
+
 ## Downloading the Data
 
-### Kaggle competition data
+### Manual
 
 ```bash
 kaggle competitions download -c asl-signs -p data/01_raw/ && \
@@ -10,56 +14,23 @@ kaggle competitions download -c asl-signs -p data/01_raw/ && \
   rm data/01_raw/asl_signs.zip
 ```
 
-### Landmark graph
+### With the `data_fetch` pipeline
 
 ```bash
-curl -O https://github.com/google/mediapipe/raw/master/mediapipe/models/holistic_landmark/holistic_landmark_graph.pbtxt
+kedro run --pipeline data_fetch
 ```
 
-## Overview
+## Development
 
-This is a Kedro project, which was generated using `Kedro 0.18.6`.
+### Creating development environment
 
-Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get started.
-
-## Rules and guidelines
-
-In order to get the best out of the template:
-
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a [data engineering convention](https://kedro.readthedocs.io/en/stable/faq/faq.html#what-is-data-engineering-convention)
-* Don't commit data
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
-
-## How to install dependencies
-
-Declare any dependencies in `src/requirements.txt` for `pip` installation and `src/environment.yml` for `conda` installation.
-
-To install them, run:
+This project depends on `conda`. To create a `conda` environment with the project and development dependencies, run:
 
 ```bash
-pip install -r src/requirements.txt
+make environment
 ```
 
-## Running the pipeline
-
-You can run the default pipeline with:
-
-```bash
-kedro run
-```
-
-## Running tests
-
-Run the unit tests with:
-
-```bash
-kedro test
-```
-
-To configure the coverage threshold, go to the `.coveragerc` file.
-
-## Project dependencies
+### Creating a dependencies lockfile
 
 To generate or update the dependency requirements for your project:
 
@@ -73,7 +44,17 @@ After this, if you'd like to update your project requirements, please update `sr
 
 [Further information about project dependencies](https://kedro.readthedocs.io/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
 
-## How to work with Kedro and notebooks
+### Running tests
+
+Run the projects unit tests with:
+
+```bash
+kedro test
+```
+
+To configure the coverage threshold, go to the `.coveragerc` file.
+
+### How to work with Kedro and notebooks
 
 > Note: Using `kedro jupyter` or `kedro ipython` to run your notebook provides these variables in scope: `context`, `catalog`, and `startup_error`.
 >
@@ -124,6 +105,6 @@ To automatically strip out all output cell contents before committing to `git`, 
 
 > *Note:* Your output cells will be retained locally.
 
-## Packaging
+### Packaging
 
 [Further information about building project documentation and packaging](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
