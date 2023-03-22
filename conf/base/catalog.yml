@@ -1,17 +1,14 @@
-# Here you can define all your data sets by using simple YAML syntax.
-#
-# Documentation for this file format can be found in "The Data Catalog"
-# Link: https://kedro.readthedocs.io/en/stable/data/data_catalog.html
-landmarks:
-  type: "PartitionedDataSet"
-  path: "data/01_raw/train_landmark_files"
-  dataset: "pandas.ParquetDataSet"
-  filename_suffix: ".parquet"
+# Raw data
+training_landmarks:
+  type: PartitionedDataSet
+  path: data/01_raw/train_landmark_files
+  dataset: pandas.ParquetDataSet
+  filename_suffix: .parquet
 
-signs:
-  type: "pandas.CSVDataSet"
-  filepath: "data/01_raw/train.csv"
+training_signs:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/train.csv
 
 sign_to_prediction_index:
-  type: "json.JSONDataSet"
-  filepath: "data/01_raw/sign_to_prediction_index_map.json"
+  type: json.JSONDataSet
+  filepath: data/01_raw/sign_to_prediction_index_map.json
