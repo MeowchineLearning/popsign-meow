@@ -29,7 +29,7 @@ def download_competition_data(competition: str, directory: str = "data/01_raw") 
     return Path(directory) / filepath
 
 
-def unzip_competition_data(filepath: str, directory: str, cleanup: bool = False) -> List[str]:
+def unzip_competition_data(filepath: str, directory: str = "data/01_raw", cleanup: bool = False) -> List[str]:
     directory = directory or str(Path(filepath).parent)
     with zipfile.ZipFile(filepath, "r") as zf:
         filepaths = zf.namelist()

@@ -13,7 +13,7 @@ Processing of raw kaggle competition data into model training and testing inputs
 
 ## Pipeline outputs
 
-* train_X
-* train_y
-* test_X
-* test_y
+* X_train
+* y_train
+* X_test
+* y_test
