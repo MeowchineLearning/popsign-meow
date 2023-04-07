@@ -1,11 +1,11 @@
 # Raw data
-training_landmarks:
+landmarks:
   type: PartitionedDataSet
   path: data/01_raw/train_landmark_files
   dataset: pandas.ParquetDataSet
   filename_suffix: .parquet
 
-training_signs:
+signs:
   type: pandas.CSVDataSet
   filepath: data/01_raw/train.csv
 

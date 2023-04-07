@@ -7,3 +7,4 @@ kedro-datasets[pandas]
 kaggle~=1.5.13
 mediapipe~=0.9.1
 tensorflow~=2.11
+tensorflow-io~=0.31
