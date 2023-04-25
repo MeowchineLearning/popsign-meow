@@ -6,7 +6,5 @@ kedro-datasets[pandas]
 -e .
 kaggle~=1.5.13
 mediapipe~=0.9.1
-torch~=2.0.0
-torchvision
-torchaudio
---extra-index-url https://download.pytorch.org/whl/cpu
+tensorflow~=2.11
+tensorflow-io~=0.31

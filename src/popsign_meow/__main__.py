@@ -3,6 +3,7 @@ as `popsign-meow` and `python -m popsign_meow`
 """
 from pathlib import Path
 import importlib
+import warnings
 
 from kedro.framework.cli.utils import KedroCliError, load_entry_points
 
