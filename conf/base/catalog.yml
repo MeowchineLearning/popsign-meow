@@ -1,4 +1,5 @@
-# Raw data
+# Raw
+
 landmarks:
   type: PartitionedDataSet
   path: data/01_raw/train_landmark_files
@@ -9,6 +10,61 @@ signs:
   type: pandas.CSVDataSet
   filepath: data/01_raw/train.csv
 
-sign_to_prediction_index:
+sign_to_index:
   type: json.JSONDataSet
   filepath: data/01_raw/sign_to_prediction_index_map.json
+
+# Preprocessing
+
+signs_indexes:
+  type: pandas.ParquetDataSet
+  filepath: data/03_primary/sign_indexes.parquet
+
+# Training
+
+feature_data:
+  type: pickle.PickleDataSet
+  filepath: data/04_feature/feature_data.pkl
+
+feature_labels:
+  type: pickle.PickleDataSet
+  filepath: data/04_feature/feature_labels.pkl
+
+train_X:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/train_X.pkl
+
+train_y:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/train_y.pkl
+
+val_X:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/val_X.pkl
+
+val_y:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/val_y.pkl
+
+# Modelling
+
+model_summary:
+  type: text.TextDataSet
+  filepath: data/06_models/summary.txt
+
+model_json:
+  type: text.TextDataSet
+  filepath: data/06_models/model.json
+
+model_plot:
+  type: pillow.ImageDataSet
+  filepath: data/06_models/model.png
+
+trained_model:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/06_models/trained_model
+  load_args:
+    compile: True
+  save_args:
+    overwrite: True
+    include_optimizer: True

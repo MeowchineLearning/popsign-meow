@@ -1,8 +1,8 @@
-# Train
+# Pipeline model
 
 ## Overview
 
-Training machine learning models on preprocessed inputs.
+Trains the model on the feature data.
 
 ## Pipeline inputs
 
@@ -13,5 +13,4 @@ Training machine learning models on preprocessed inputs.
 
 ## Pipeline outputs
 
-* model_tf
-* model_tflite
+* trained_model

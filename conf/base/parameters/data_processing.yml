@@ -1,5 +1,0 @@
-test_split: .3
-seed: 33
-subsample: .001
-rows_per_frame: 543
-batch_size: 20

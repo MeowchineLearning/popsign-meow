@@ -1,63 +1,68 @@
-import tensorflow as tf
+from contextlib import redirect_stdout
+from io import StringIO
+
+from numpy.typing import ArrayLike
+from tensorflow.keras import callbacks, layers, utils
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
 
 
-class PrepInputs(tf.keras.layers.Layer):
-    def __init__(self, face_idx_range=(0, 468), lh_idx_range=(468, 489), pose_idx_range=(489, 522), rh_idx_range=(522, 543)):
-        super(PrepInputs, self).__init__()
-        self.idx_ranges = [face_idx_range, lh_idx_range, pose_idx_range, rh_idx_range]
-        self.flat_feat_lens = [3 * (stop - start) for start, stop in self.idx_ranges]
+def get_model(params):
+    n_inputs = params["n_inputs"]
+    n_layers = params["n_layers"]
+    n_labels = params["n_labels"]
+    dropouts = params["dropouts"]
+    starting_layer_size = params["starting_layer_size"]
 
-    def call(self, X_in):
-        # Split the single vector into 4
-        X_split = [X_in[:, start:stop, :] for start, stop in self.idx_ranges]
+    inputs = layers.Input(shape=(n_inputs,))
 
-        # Reshape based on specific number of keypoints
-        X_split = [tf.reshape(_X, (-1, flat_feat_len)) for _X, flat_feat_len in zip(X_split, self.flat_feat_lens)]
+    def fc_block(inputs, output_channels, dropout):
+        x = layers.Dense(output_channels)(inputs)
+        x = layers.BatchNormalization()(x)
+        x = layers.Activation("gelu")(x)
+        x = layers.Dropout(dropout)(x)
+        return x
 
-        # Drop empty rows - Empty rows are present in
-        #   --> pose, lh, rh
-        #   --> so we don't have to for face
-        X_split[1:] = [tf.boolean_mask(_X, tf.reduce_all(tf.logical_not(tf.math.is_nan(_X)), axis=1), axis=0) for _X in X_split[1:]]
+    x = inputs
+    for i in range(n_layers):
+        x = fc_block(x, output_channels=starting_layer_size // (2**i), dropout=dropouts[i])
 
-        X_means = [tf.math.reduce_mean(_X, axis=0) for _X in X_split]
-        X_stds = [tf.math.reduce_std(_X, axis=0) for _X in X_split]
+    outputs = layers.Dense(n_labels, activation="softmax")(x)
 
-        X_out = tf.concat([*X_means, *X_stds], axis=0)
-        X_out = tf.where(tf.math.is_finite(X_out), X_out, tf.zeros_like(X_out))
+    model = Model(inputs=inputs, outputs=outputs)
 
-        return tf.expand_dims(X_out, axis=0)
+    return model
 
 
-class TFLiteModel(tf.Module):
-    """
-    TensorFlow Lite model that takes input tensors and applies:
-        – a preprocessing model
-        – the ISLR model
-    """
+def train_model(model: Model, train_X: ArrayLike, train_y: ArrayLike, val_X: ArrayLike, val_y: ArrayLike, params):
+    model.compile(Adam(params["learning_rate"]), "sparse_categorical_crossentropy", metrics="acc")
+    cb_list = [
+        callbacks.EarlyStopping(patience=params["es_patience"], restore_best_weights=True, verbose=1),
+        callbacks.ReduceLROnPlateau(patience=params["rp_patience"], factor=params["rp_reduction_factor"], verbose=1),
+    ]
+    model.fit(
+        train_X,
+        train_y,
+        validation_data=(val_X, val_y),
+        epochs=params["epochs"],
+        callbacks=cb_list,
+        batch_size=params["batch_size"],
+    )
 
-    def __init__(self, islr_model):
-        """
-        Initializes the TFLiteModel with the specified preprocessing model and ISLR model.
-        """
-        super(TFLiteModel, self).__init__()
+    return model
 
-        # Load the feature generation and main models
-        self.prep_inputs = PrepInputs()
-        self.islr_model = islr_model
 
-    @tf.function(input_signature=[tf.TensorSpec(shape=[None, 543, 3], dtype=tf.float32, name="inputs")])
-    def __call__(self, inputs):
-        """
-        Applies the feature generation model and main model to the input tensors.
+def summarize_model(model: Model):
+    s = StringIO()
+    with redirect_stdout(s):
+        model.summary()
+    s.seek(0)
+    return s.read()
 
-        Args:
-            inputs: Input tensor with shape [batch_size, 543, 3].
 
-        Returns:
-            A dictionary with a single key 'outputs' and corresponding output tensor.
-        """
-        x = self.prep_inputs(tf.cast(inputs, dtype=tf.float32))
-        outputs = self.islr_model(x)[0, :]
+def model_to_json(model: Model):
+    return model.to_json()
 
-        # Return a dictionary with the output tensor
-        return {"outputs": outputs}
+
+def plot_model(model: Model):
+    return utils.plot_model(model)
