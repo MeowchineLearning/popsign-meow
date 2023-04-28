@@ -1,0 +1,14 @@
+# Model parameters
+starting_layer_size: 1024
+n_inputs: 5796
+n_layers: 2
+n_labels: 250
+dropouts: [0.4, 0.4]
+
+# Hyperparameters
+batch_size: 64
+learning_rate: 2.e-4
+es_patience: 10
+rp_patience: 2
+rp_reduction_factor: 0.8
+epochs: 300

@@ -6,6 +6,7 @@ isort~=5.0
 jupyter~=1.0
 jupyterlab~=3.0, <3.6.0
 jupyterlab_server>=2.11.1, <2.16.0
+tflite-runtime~=2.9.1
 mypy~=1.1.1
 nbstripout~=0.4
 pytest-cov~=3.0
@@ -14,6 +15,6 @@ pytest~=7.2
 
 # Bruce's setup
 epc~=0.0.5
-importmagic~=0.1.7 
+importmagic~=0.1.7
 jupyterlab-vim~=0.16.0
 pyright~=1.1.299
